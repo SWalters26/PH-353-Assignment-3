@@ -44,8 +44,8 @@ def x_initial_func(N):
 
 def x_candidate_function(N):
     x_init = x_initial_func(N)
-    i = rand(1,N-1)
-    x_init[i] += rand(-10,10)
+    i = rand.randint(1,N-1)
+    x_init[i] = x_init[i] * rand.uniform(-2,2)
     x_candidate = x_init
     return x_candidate
 
@@ -65,11 +65,11 @@ def metro(N):
     S_e_cand = action_calc(N, x_candidate_function(N))
     delta_S_e = S_e_init - S_e_cand 
     if np.exp(-delta_S_e) >= 1:
-        print(True) #accept
+        print(True) #accept - to be made still
     else:
         if np.exp(-delta_S_e) >= rand.uniform(0,1):
-            print(True)
+            print(True)#accept - to be made still
         else:
-            print(False)
+            print(False)#reject - to be made still
     
     
