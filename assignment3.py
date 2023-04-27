@@ -39,8 +39,8 @@ def x_initial_func(N):
     x = np.ones(N)
     return x
 
-def x_candidate_function(N):
-    x_init = x_initial_func(N)
+def x_candidate_function(N, func_to_kick):
+    x_init = func_to_kick
     i = rand.randint(1,N-1)
     x_init[i] = x_init[i] * rand.uniform(-2,2)
     x_candidate = x_init
@@ -51,28 +51,28 @@ def action_calc(N, func):
     mu = 10
     m = 2
     S_e = 0
-    x = func(N)
+    x = func
     for i in range(1,N-1):
         S_e += (1/2*m*((x[i+1]-x[i])/a)**2)+1/2*mu**2 * x[i]**2
     return S_e
 
 
-def metro(N):
-    S_e_init = action_calc(N, x_initial_func)
-    S_e_cand = action_calc(N, x_candidate_function)
+def metro(N, func_init, func_cand):
+    S_e_init = action_calc(N, func_init)
+    S_e_cand = action_calc(N, func_cand)
     delta_S_e = S_e_init - S_e_cand 
     if np.exp(-delta_S_e) >= 1:
-        return(S_e_cand) #accept - to be made still
+        return(func_cand) #accept - to be made still
     else:
         if np.exp(-delta_S_e) >= rand.uniform(0,1):
-            return(S_e_cand)#accept - to be made still
+            return(func_cand)#accept - to be made still
         else:
-            return(S_e_init)#reject - to be made still
+            return(func_init)#reject - to be made still
 
 
-def metro_repeats(N,runs):
-    func_array = np.zeros(runs)
-    for i in range(runs):
-        func_array[i] = metro(N)
+def metro_repeats(N,runs,func_init):
+    func_array = np.zeros((runs,N))
+    func_array[0] = func_init
+    for i in range(1, runs, 1):
+        func_array[i] = metro(N,func_array[i-1],x_candidate_function(N,func_array[i-1]))
     return func_array
-    
