@@ -12,7 +12,6 @@ import statistics as stat
 #when making a kick, do the accept reject step on the action of new config - action of old config 
 '''
 def metro(x,N):
-
     count = 0
     x_array = np.zeros(N+1)
     x_array[count] = x
@@ -34,8 +33,6 @@ def metro(x,N):
     average_metro = np.mean(x_array)
     uncertainty = np.sqrt((1/(N-1)))*stat.stdev(x_array)
     return x_array,uncertainty
-
-
 '''
 
 def x_initial_func(N):
@@ -61,15 +58,21 @@ def action_calc(N, func):
 
 
 def metro(N):
-    S_e_init = action_calc(N, x_initial_func(N))
-    S_e_cand = action_calc(N, x_candidate_function(N))
+    S_e_init = action_calc(N, x_initial_func)
+    S_e_cand = action_calc(N, x_candidate_function)
     delta_S_e = S_e_init - S_e_cand 
     if np.exp(-delta_S_e) >= 1:
-        print(True) #accept - to be made still
+        return(S_e_cand) #accept - to be made still
     else:
         if np.exp(-delta_S_e) >= rand.uniform(0,1):
-            print(True)#accept - to be made still
+            return(S_e_cand)#accept - to be made still
         else:
-            print(False)#reject - to be made still
-    
+            return(S_e_init)#reject - to be made still
+
+
+def metro_repeats(N,runs):
+    func_array = np.zeros(runs)
+    for i in range(runs):
+        func_array[i] = metro(N)
+    return func_array
     
