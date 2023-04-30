@@ -10,46 +10,22 @@ import statistics as stat
 #for the harmonic oscillator, S_e = a*sum^{N}_{i=1}(1/2 m ((x_{i+1}-x_i)/a)^2 + 1/2 mu^2 (x_i)^2)
 #generate path, give it a kick(some random amount a kick or like 1 or 2...), accept/reject, 
 #when making a kick, do the accept reject step on the action of new config - action of old config 
-'''
-def metro(x,N):
-    count = 0
-    x_array = np.zeros(N+1)
-    x_array[count] = x
-    x_candidate = x
-    while count < N:
-        x_candidate = x*rand.uniform(0.1,1.9)
-        delta_H = (x_array[count])**2-x_candidate**2
-        if np.exp(-delta_H) >= 1:
-            count += 1 
-            x_array[count] = x_candidate
-        else:
-            if x_candidate >= rand.uniform(0,1): #accept case
-                count += 1
-                x_array[count] = x_candidate
-            else: #reject case
-                x_candidate = x_array[count]
-                count += 1
-                x_array[count] = x_candidate
-    average_metro = np.mean(x_array)
-    uncertainty = np.sqrt((1/(N-1)))*stat.stdev(x_array)
-    return x_array,uncertainty
-'''
 
 def x_initial_func(N):
     x = np.ones(N)
     return x
 
-def x_candidate_function(N, func_to_kick):
+def x_candidate_func(N, func_to_kick):
     x_init = func_to_kick
-    i = rand.randint(1,N-1)
+    i = rand.randint(0,N-1)
     x_init[i] = x_init[i] * rand.uniform(-2,2)
     x_candidate = x_init
     return x_candidate
 
 def action_calc(N, func):
     a = 1
-    mu = 10
-    m = 2
+    mu = 1
+    m = 1
     S_e = 0
     x = func
     for i in range(1,N-1):
@@ -74,5 +50,5 @@ def metro_repeats(N,runs,func_init):
     func_array = np.zeros((runs,N))
     func_array[0] = func_init
     for i in range(1, runs, 1):
-        func_array[i] = metro(N,func_array[i-1],x_candidate_function(N,func_array[i-1]))
+        func_array[i] = metro(N,func_array[i-1],x_candidate_func(N,func_array[i-1]))
     return func_array
