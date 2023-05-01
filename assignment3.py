@@ -11,7 +11,7 @@ import statistics as stat
 #generate path, give it a kick(some random amount a kick or like 1 or 2...), accept/reject, 
 #when making a kick, do the accept reject step on the action of new config - action of old config 
 
-def x_initial_func(N):
+def x_initial_func(N): #N is size of initial function
     x = np.ones(N)
     return x
 
@@ -57,3 +57,27 @@ def ground_state(N,runs,func_init):
     mu = 1
     E_0 = mu**2*(sum(metro_repeats(N,runs,func_init)**2))
     return E_0, metro_repeats(N,runs,x_initial_func(N))
+
+def Z(N, func):
+    Z = 0
+    for i in range(0,N):
+        Z += np.exp(-action_calc(N,func))
+    return Z
+
+def Theory_ground_state(mu, m, a):
+    return 1/2 * (mu/np.sqrt(m) * (1 - (mu**2 * a**2)/(8*m)))
+
+def n_excited_state(n): #run time increases exponentially with n, don't run for more than n = 10 (this takes about 20s)
+    mu = 1
+    m = 1
+    a = 1
+    E_n = 0
+    w = (mu/np.sqrt(m) * (1 - (mu**2 * a**2)/(24*m)))
+    if n == 0 :
+        E_n = Theory_ground_state(mu, m, a)
+        return E_n
+    else:
+        for i in range(0,n):
+            E_n += n_excited_state(n-1) + w
+        return E_n
+        
