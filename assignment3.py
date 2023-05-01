@@ -38,12 +38,12 @@ def metro(N, func_init, func_cand):
     S_e_cand = action_calc(N, func_cand)
     delta_S_e = S_e_init - S_e_cand 
     if np.exp(-delta_S_e) >= 1:
-        return(func_cand) #accept - to be made still
+        return(func_cand) #accept
     else:
         if np.exp(-delta_S_e) >= rand.uniform(0,1):
-            return(func_cand)#accept - to be made still
+            return(func_cand) #accept
         else:
-            return(func_init)#reject - to be made still
+            return(func_init) #reject
 
 
 def metro_repeats(N,runs,func_init):
@@ -52,3 +52,8 @@ def metro_repeats(N,runs,func_init):
     for i in range(1, runs, 1):
         func_array[i] = metro(N,func_array[i-1],x_candidate_func(N,func_array[i-1]))
     return func_array
+
+def ground_state(N,runs,func_init):
+    mu = 1
+    E_0 = mu**2*(sum(metro_repeats(N,runs,func_init)**2))
+    return E_0, metro_repeats(N,runs,x_initial_func(N))
