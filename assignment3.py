@@ -64,9 +64,11 @@ def Z(N, func):
         Z += np.exp(-action_calc(N,func))
     return Z
 
+#theoretical calculation of the ground state
 def Theory_ground_state(mu, m, a):
     return 1/2 * (mu/np.sqrt(m) * (1 - (mu**2 * a**2)/(8*m)))
 
+#theoretical calculation of excited states
 def n_excited_state(n): #run time increases exponentially with n, don't run for more than n = 10 (this takes about 20s)
     mu = 1
     m = 1
