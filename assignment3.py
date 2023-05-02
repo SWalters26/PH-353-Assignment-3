@@ -18,7 +18,7 @@ def x_initial_func(N): #N is size of initial function
 def x_candidate_func(N, func_to_kick):
     x_init = func_to_kick
     i = rand.randint(0,N-1)
-    x_init[i] = x_init[i] * rand.uniform(-2,2)
+    x_init[i] = x_init[i] * rand.uniform(0.9,1.1)
     x_candidate = x_init
     return x_candidate
 
@@ -55,8 +55,8 @@ def metro_repeats(N,runs,func_init):
 
 def ground_state(N,runs,func_init):
     mu = 1
-    E_0 = mu**2*(sum(metro_repeats(N,runs,func_init)**2))
-    return E_0, metro_repeats(N,runs,x_initial_func(N))
+    E_0 = (np.mean((metro_repeats(N,runs,func_init))**2))*mu**2
+    return E_0,Theory_ground_state(1,1,1) #metro_repeats(N,runs,x_initial_func(N)) 
 
 def Z(N, func):
     Z = 0
