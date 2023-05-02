@@ -18,7 +18,13 @@ def x_initial_func(N): #N is size of initial function
 def x_candidate_func(N, func_to_kick):
     x_init = func_to_kick
     i = rand.randint(0,N-1)
-    x_init[i] = x_init[i] * rand.uniform(0.9,1.1)
+    kick = rand.uniform(0.9,1.1)
+    r = rand.randint(0,1)
+    if r == 0:
+        v = -1
+    else:
+        v = 1
+    x_init[i] = x_init[i] + rand.uniform(-1,1) #* kick * v
     x_candidate = x_init
     return x_candidate
 
@@ -26,9 +32,9 @@ def action_calc(N, func):
     a = 1
     mu = 1
     m = 1
-    S_e = 0
     x = func
-    for i in range(1,N-1):
+    S_e = 0
+    for i in range(0,N-1):
         S_e += (1/2*m*((x[i+1]-x[i])/a)**2)+1/2*mu**2 * x[i]**2
     return S_e
 
@@ -48,21 +54,30 @@ def metro(N, func_init, func_cand):
 
 def metro_repeats(N,runs,func_init):
     func_array = np.zeros((runs,N))
-    func_array[0] = func_init
+    func_array[0,:] = func_init
     for i in range(1, runs, 1):
-        func_array[i] = metro(N,func_array[i-1],x_candidate_func(N,func_array[i-1]))
+        func_array[i,:] = metro(N,func_array[i-1,:],x_candidate_func(N,func_array[i-1,:]))
     return func_array
 
 def ground_state(N,runs,func_init):
     mu = 1
-    E_0 = (np.mean((metro_repeats(N,runs,func_init))**2))*mu**2
-    return E_0,Theory_ground_state(1,1,1) #metro_repeats(N,runs,x_initial_func(N)) 
+    E_0 = (np.mean((metro_repeats(N,runs,func_init)[N])**2))*mu**2
+    return E_0#,Theory_ground_state(1,1,1), metro_repeats(N,runs,x_initial_func(N)) 
+
+def ground_state_prob_dis(N,runs,g_s_runs,func_init):
+    tot = 0
+    for i in range(g_s_runs):
+        tot += ground_state(N,runs,func_init)
+    return tot
 
 def Z(N, func):
     Z = 0
     for i in range(0,N):
         Z += np.exp(-action_calc(N,func))
     return Z
+
+def excited_state(N,runs,func_init):
+    return False
 
 #theoretical calculation of the ground state
 def Theory_ground_state(mu, m, a):
